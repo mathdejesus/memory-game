@@ -6,6 +6,8 @@ import { GameOverModal } from '../components/GameOverModal';
 import { useGameLogic } from '../hooks/useGameLogic';
 import { useGameState } from '../hooks/useGameState';
 import { Difficulty } from '../types/game.types';
+import { GameStats } from '../types/game.types';
+import { StorageManager } from '../utils/storageManager';
 
 interface GameScreenProps {
   route: { params: { difficulty: Difficulty } };
@@ -24,6 +26,18 @@ export default function GameScreen({ route, navigation }: GameScreenProps) {
       const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
       setGameOverVisible(true);
       saveGame(gameState);
+
+      const won = gameState.matchedPairs === gameState.cards.length / 2;
+      StorageManager.getStats().then((existing) => {
+        const currentStats: GameStats = {
+          gamesPlayed: (existing?.gamesPlayed ?? 0) + 1,
+          gamesWon: (existing?.gamesWon ?? 0) + (won ? 1 : 0),
+          bestTime: existing?.bestTime ? Math.min(existing.bestTime, elapsed) : elapsed,
+          totalScore: (existing?.totalScore ?? 0) + gameState.score,
+          lastPlayDate: new Date().toISOString(),
+        };
+        StorageManager.saveStats(currentStats);
+      });
     }
   }, [gameState.isGameOver]);
 
