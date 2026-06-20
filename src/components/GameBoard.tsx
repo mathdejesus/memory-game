@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Card as CardType } from '../types/game.types';
 import { Card } from './Card';
 
@@ -11,7 +11,7 @@ interface GameBoardProps {
 
 export function GameBoard({ cards, onCardPress, disabled }: GameBoardProps) {
   return (
-    <View style={styles.container}>
+    <View style={styles.wrapper}>
       <View style={styles.grid}>
         {cards.map((card) => (
           <Card
@@ -27,15 +27,18 @@ export function GameBoard({ cards, onCardPress, disabled }: GameBoardProps) {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  wrapper: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: 8,
+    overflow: 'scroll',
   },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
+    maxWidth: 400,
   },
 });

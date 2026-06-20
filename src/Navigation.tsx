@@ -5,6 +5,7 @@ import HomeScreen from './screens/HomeScreen';
 import GameScreen from './screens/GameScreen';
 import StatsScreen from './screens/StatsScreen';
 import { Difficulty } from './types/game.types';
+import { useTheme } from './contexts/ThemeContext';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -15,13 +16,15 @@ export type RootStackParamList = {
 const Stack = createStackNavigator<RootStackParamList>();
 
 export default function Navigation() {
+  const { theme } = useTheme();
+
   return (
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Home"
         screenOptions={{
-          headerStyle: { backgroundColor: '#4A90D9' },
-          headerTintColor: '#FFF',
+          headerStyle: { backgroundColor: theme.headerBg },
+          headerTintColor: theme.headerTint,
           headerTitleStyle: { fontWeight: 'bold' },
         }}
       >
@@ -33,7 +36,7 @@ export default function Navigation() {
         <Stack.Screen
           name="Game"
           component={GameScreen}
-          options={{ title: 'Jogando', headerBackTitle: 'Sair' }}
+          options={{ title: 'Jogando' }}
         />
         <Stack.Screen
           name="Stats"

@@ -2,21 +2,24 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { DifficultySelector } from '../components/DifficultySelector';
 import { Difficulty } from '../types/game.types';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface HomeScreenProps {
   navigation: any;
 }
 
 export default function HomeScreen({ navigation }: HomeScreenProps) {
+  const { theme } = useTheme();
+
   const handleSelectDifficulty = (difficulty: Difficulty) => {
     navigation.navigate('Game', { difficulty });
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <DifficultySelector onSelect={handleSelectDifficulty} />
       <TouchableOpacity
-        style={styles.statsButton}
+        style={[styles.statsButton, { backgroundColor: theme.textSecondary }]}
         onPress={() => navigation.navigate('Stats')}
         activeOpacity={0.7}
       >
@@ -29,13 +32,11 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
   },
   statsButton: {
     position: 'absolute',
     bottom: 40,
     alignSelf: 'center',
-    backgroundColor: '#6C757D',
     paddingVertical: 14,
     paddingHorizontal: 40,
     borderRadius: 12,

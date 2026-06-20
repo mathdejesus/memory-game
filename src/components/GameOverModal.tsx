@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface GameOverModalProps {
   visible: boolean;
@@ -20,6 +21,8 @@ export function GameOverModal({
   onPlayAgain,
   onMenu,
 }: GameOverModalProps) {
+  const { theme } = useTheme();
+
   const formatTime = (seconds: number): string => {
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;
@@ -28,25 +31,25 @@ export function GameOverModal({
 
   return (
     <Modal visible={visible} transparent animationType="fade">
-      <View style={styles.overlay}>
-        <View style={styles.modal}>
-          <Text style={styles.title}>{won ? 'Parabéns!' : 'Fim de Jogo'}</Text>
+      <View style={[styles.overlay, { backgroundColor: theme.overlay }]}>
+        <View style={[styles.modal, { backgroundColor: theme.surface }]}>
+          <Text style={[styles.title, { color: theme.text }]}>{won ? 'Parabéns!' : 'Fim de Jogo'}</Text>
           <View style={styles.stats}>
-            <Text style={styles.stat}>
-              Score: <Text style={styles.statValue}>{score}</Text>
+            <Text style={[styles.stat, { color: theme.textSecondary }]}>
+              Score: <Text style={[styles.statValue, { color: theme.text }]}>{score}</Text>
             </Text>
-            <Text style={styles.stat}>
-              Tentativas: <Text style={styles.statValue}>{attempts}</Text>
+            <Text style={[styles.stat, { color: theme.textSecondary }]}>
+              Tentativas: <Text style={[styles.statValue, { color: theme.text }]}>{attempts}</Text>
             </Text>
-            <Text style={styles.stat}>
-              Tempo: <Text style={styles.statValue}>{formatTime(elapsedTime)}</Text>
+            <Text style={[styles.stat, { color: theme.textSecondary }]}>
+              Tempo: <Text style={[styles.statValue, { color: theme.text }]}>{formatTime(elapsedTime)}</Text>
             </Text>
           </View>
-          <TouchableOpacity style={styles.button} onPress={onPlayAgain}>
+          <TouchableOpacity style={[styles.button, { backgroundColor: theme.primary }]} onPress={onPlayAgain}>
             <Text style={styles.buttonText}>Jogar Novamente</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.secondaryButton} onPress={onMenu}>
-            <Text style={styles.secondaryButtonText}>Menu</Text>
+            <Text style={[styles.secondaryButtonText, { color: theme.primary }]}>Menu</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -57,12 +60,10 @@ export function GameOverModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modal: {
-    backgroundColor: '#FFF',
     borderRadius: 20,
     padding: 32,
     width: '80%',
@@ -71,7 +72,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
     marginBottom: 24,
   },
   stats: {
@@ -80,17 +80,14 @@ const styles = StyleSheet.create({
   },
   stat: {
     fontSize: 16,
-    color: '#666',
     marginBottom: 8,
     textAlign: 'center',
   },
   statValue: {
     fontWeight: 'bold',
-    color: '#333',
   },
   button: {
     width: '100%',
-    backgroundColor: '#4A90D9',
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
@@ -106,6 +103,5 @@ const styles = StyleSheet.create({
   },
   secondaryButtonText: {
     fontSize: 16,
-    color: '#4A90D9',
   },
 });

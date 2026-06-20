@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Difficulty } from '../types/game.types';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface DifficultySelectorProps {
   onSelect: (difficulty: Difficulty) => void;
@@ -13,19 +14,21 @@ const difficulties: { key: Difficulty; label: string; description: string }[] = 
 ];
 
 export function DifficultySelector({ onSelect }: DifficultySelectorProps) {
+  const { theme } = useTheme();
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Memory Game</Text>
-      <Text style={styles.subtitle}>Selecione a dificuldade</Text>
+      <Text style={[styles.title, { color: theme.primary }]}>Memory Game</Text>
+      <Text style={[styles.subtitle, { color: theme.textSecondary }]}>Selecione a dificuldade</Text>
       {difficulties.map(({ key, label, description }) => (
         <TouchableOpacity
           key={key}
-          style={styles.button}
+          style={[styles.button, { backgroundColor: theme.primary }]}
           onPress={() => onSelect(key)}
           activeOpacity={0.7}
         >
           <Text style={styles.buttonLabel}>{label}</Text>
-          <Text style={styles.buttonDesc}>{description}</Text>
+          <Text style={[styles.buttonDesc, { color: theme.headerTint }]}>{description}</Text>
         </TouchableOpacity>
       ))}
     </View>
@@ -42,17 +45,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: '#4A90D9',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
     marginBottom: 32,
   },
   button: {
     width: '80%',
-    backgroundColor: '#4A90D9',
     padding: 18,
     borderRadius: 12,
     marginBottom: 16,
@@ -65,7 +65,6 @@ const styles = StyleSheet.create({
   },
   buttonDesc: {
     fontSize: 14,
-    color: '#D6E8F7',
     marginTop: 4,
   },
 });

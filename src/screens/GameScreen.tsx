@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, StyleSheet, SafeAreaView } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { GameBoard } from '../components/GameBoard';
 import { ScoreBoard } from '../components/ScoreBoard';
 import { GameOverModal } from '../components/GameOverModal';
@@ -8,6 +8,7 @@ import { useGameState } from '../hooks/useGameState';
 import { Difficulty } from '../types/game.types';
 import { GameStats } from '../types/game.types';
 import { StorageManager } from '../utils/storageManager';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface GameScreenProps {
   route: { params: { difficulty: Difficulty } };
@@ -15,6 +16,7 @@ interface GameScreenProps {
 }
 
 export default function GameScreen({ route, navigation }: GameScreenProps) {
+  const { theme } = useTheme();
   const { difficulty } = route.params;
   const { gameState, handleCardPress, resetGame } = useGameLogic(difficulty);
   const { saveGame } = useGameState();
@@ -52,7 +54,7 @@ export default function GameScreen({ route, navigation }: GameScreenProps) {
   }, [navigation]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <ScoreBoard
         score={gameState.score}
         attempts={gameState.attempts}
@@ -74,13 +76,13 @@ export default function GameScreen({ route, navigation }: GameScreenProps) {
         onPlayAgain={handlePlayAgain}
         onMenu={handleMenu}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    overflow: 'scroll',
   },
 });

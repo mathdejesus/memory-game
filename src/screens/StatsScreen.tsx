@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useAsyncStorage } from '../hooks/useAsyncStorage';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function StatsScreen() {
+  const { theme } = useTheme();
   const { stats, loading, loadStats } = useAsyncStorage();
 
   useEffect(() => {
@@ -11,9 +13,9 @@ export default function StatsScreen() {
 
   if (loading || !stats) {
     return (
-      <SafeAreaView style={styles.container}>
-        <Text style={styles.loading}>Carregando...</Text>
-      </SafeAreaView>
+      <View style={[styles.container, { backgroundColor: theme.background }]}>
+        <Text style={[styles.loading, { color: theme.textSecondary }]}>Carregando...</Text>
+      </View>
     );
   }
 
@@ -23,44 +25,43 @@ export default function StatsScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.content}>
-        <Text style={styles.title}>Estatísticas</Text>
-        <View style={styles.card}>
+        <Text style={[styles.title, { color: theme.text }]}>Estatísticas</Text>
+        <View style={[styles.card, { backgroundColor: theme.surface }]}>
           <View style={styles.row}>
-            <Text style={styles.label}>Partidas Jogadas</Text>
-            <Text style={styles.value}>{stats.gamesPlayed}</Text>
+            <Text style={[styles.label, { color: theme.textSecondary }]}>Partidas Jogadas</Text>
+            <Text style={[styles.value, { color: theme.text }]}>{stats.gamesPlayed}</Text>
           </View>
-          <View style={styles.divider} />
+          <View style={[styles.divider, { backgroundColor: theme.border }]} />
           <View style={styles.row}>
-            <Text style={styles.label}>Partidas Vencidas</Text>
-            <Text style={styles.value}>{stats.gamesWon}</Text>
+            <Text style={[styles.label, { color: theme.textSecondary }]}>Partidas Vencidas</Text>
+            <Text style={[styles.value, { color: theme.text }]}>{stats.gamesWon}</Text>
           </View>
-          <View style={styles.divider} />
+          <View style={[styles.divider, { backgroundColor: theme.border }]} />
           <View style={styles.row}>
-            <Text style={styles.label}>Melhor Tempo</Text>
-            <Text style={styles.value}>{stats.bestTime}s</Text>
+            <Text style={[styles.label, { color: theme.textSecondary }]}>Melhor Tempo</Text>
+            <Text style={[styles.value, { color: theme.text }]}>{stats.bestTime}s</Text>
           </View>
-          <View style={styles.divider} />
+          <View style={[styles.divider, { backgroundColor: theme.border }]} />
           <View style={styles.row}>
-            <Text style={styles.label}>Score Total</Text>
-            <Text style={styles.value}>{stats.totalScore}</Text>
+            <Text style={[styles.label, { color: theme.textSecondary }]}>Score Total</Text>
+            <Text style={[styles.value, { color: theme.text }]}>{stats.totalScore}</Text>
           </View>
-          <View style={styles.divider} />
+          <View style={[styles.divider, { backgroundColor: theme.border }]} />
           <View style={styles.row}>
-            <Text style={styles.label}>Última Partida</Text>
-            <Text style={styles.value}>{formatDate(stats.lastPlayDate)}</Text>
+            <Text style={[styles.label, { color: theme.textSecondary }]}>Última Partida</Text>
+            <Text style={[styles.value, { color: theme.text }]}>{formatDate(stats.lastPlayDate)}</Text>
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
   },
   content: {
     flex: 1,
@@ -70,17 +71,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 40,
     fontSize: 16,
-    color: '#666',
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
     marginBottom: 24,
     textAlign: 'center',
   },
   card: {
-    backgroundColor: '#FFF',
     borderRadius: 16,
     padding: 20,
     elevation: 2,
@@ -97,15 +95,12 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    color: '#666',
   },
   value: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
   },
   divider: {
     height: 1,
-    backgroundColor: '#EEE',
   },
 });

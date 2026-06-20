@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface ScoreBoardProps {
   score: number;
@@ -10,6 +11,7 @@ interface ScoreBoardProps {
 }
 
 export function ScoreBoard({ score, attempts, matchedPairs, totalPairs, startTime }: ScoreBoardProps) {
+  const { theme } = useTheme();
   const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
@@ -26,22 +28,22 @@ export function ScoreBoard({ score, attempts, matchedPairs, totalPairs, startTim
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.scoreboardBg }]}>
       <View style={styles.item}>
-        <Text style={styles.label}>Score</Text>
-        <Text style={styles.value}>{score}</Text>
+        <Text style={[styles.label, { color: theme.textSecondary }]}>Score</Text>
+        <Text style={[styles.value, { color: theme.text }]}>{score}</Text>
       </View>
       <View style={styles.item}>
-        <Text style={styles.label}>Tentativas</Text>
-        <Text style={styles.value}>{attempts}</Text>
+        <Text style={[styles.label, { color: theme.textSecondary }]}>Tentativas</Text>
+        <Text style={[styles.value, { color: theme.text }]}>{attempts}</Text>
       </View>
       <View style={styles.item}>
-        <Text style={styles.label}>Pares</Text>
-        <Text style={styles.value}>{matchedPairs}/{totalPairs}</Text>
+        <Text style={[styles.label, { color: theme.textSecondary }]}>Pares</Text>
+        <Text style={[styles.value, { color: theme.text }]}>{matchedPairs}/{totalPairs}</Text>
       </View>
       <View style={styles.item}>
-        <Text style={styles.label}>Tempo</Text>
-        <Text style={styles.value}>{formatTime(elapsed)}</Text>
+        <Text style={[styles.label, { color: theme.textSecondary }]}>Tempo</Text>
+        <Text style={[styles.value, { color: theme.text }]}>{formatTime(elapsed)}</Text>
       </View>
     </View>
   );
@@ -52,7 +54,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingVertical: 12,
-    backgroundColor: '#F5F5F5',
     borderRadius: 12,
     marginHorizontal: 16,
     marginTop: 8,
@@ -62,12 +63,10 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 12,
-    color: '#666',
     marginBottom: 2,
   },
   value: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
   },
 });
