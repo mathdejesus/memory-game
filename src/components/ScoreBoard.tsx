@@ -31,19 +31,19 @@ export function ScoreBoard({ score, attempts, matchedPairs, totalPairs, startTim
     <View style={[styles.container, { backgroundColor: theme.scoreboardBg }]}>
       <View style={styles.item}>
         <Text style={[styles.label, { color: theme.textSecondary }]}>Score</Text>
-        <Text style={[styles.value, { color: theme.text }]}>{score}</Text>
+        <Text style={[styles.value, { color: theme.text }]} accessibilityRole="text" accessibilityLabel={`Pontuação: ${score}`}>{score}</Text>
       </View>
       <View style={styles.item}>
         <Text style={[styles.label, { color: theme.textSecondary }]}>Tentativas</Text>
-        <Text style={[styles.value, { color: theme.text }]}>{attempts}</Text>
+        <Text style={[styles.value, { color: theme.text }]} accessibilityRole="text" accessibilityLabel={`Tentativas: ${attempts}`}>{attempts}</Text>
       </View>
       <View style={styles.item}>
         <Text style={[styles.label, { color: theme.textSecondary }]}>Pares</Text>
-        <Text style={[styles.value, { color: theme.text }]}>{matchedPairs}/{totalPairs}</Text>
+        <Text style={[styles.value, { color: theme.text }]} accessibilityRole="text" accessibilityLabel={`Pares encontrados: ${matchedPairs} de ${totalPairs}`}>{matchedPairs}/{totalPairs}</Text>
       </View>
       <View style={styles.item}>
         <Text style={[styles.label, { color: theme.textSecondary }]}>Tempo</Text>
-        <Text style={[styles.value, { color: theme.text }]}>{formatTime(elapsed)}</Text>
+        <Text style={[styles.value, { color: theme.text }]} accessibilityRole="text" accessibilityLabel={`Tempo decorrido: ${formatTime(elapsed)}`}>{formatTime(elapsed)}</Text>
       </View>
     </View>
   );

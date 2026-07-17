@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { GameState, Difficulty } from '../types/game.types';
 import { generateCards } from '../utils/cardGenerator';
+import { calculateScore } from '../utils/gameEngine';
 
 interface UseGameLogicReturn {
   gameState: GameState;
@@ -8,13 +9,21 @@ interface UseGameLogicReturn {
   resetGame: () => void;
 }
 
+const FLIP_BACK_DELAY = 1000;
+
 export function useGameLogic(difficulty: Difficulty): UseGameLogicReturn {
   const [gameState, setGameState] = useState<GameState>(() => createInitialState(difficulty));
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Limpa o timeout pendente se o hook desmontar (ex.: usuário volta ao menu
+  // antes dos 1s de delay). Sem isso, o setGameState dispararia num componente
+  // desmontado e vazaria o timer.
   useEffect(() => {
     return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
     };
   }, []);
 
@@ -49,15 +58,20 @@ export function useGameLogic(difficulty: Difficulty): UseGameLogicReturn {
             isGameOver: newMatched === totalPairs,
           };
         } else {
+          // Captura os IDs agora para usar no callback — evita depender de
+          // prev.flippedCards, que pode ter sido esvaziado por outra atualização.
+          const idsToFlipBack = newFlipped;
+          if (timeoutRef.current) clearTimeout(timeoutRef.current);
           timeoutRef.current = setTimeout(() => {
             setGameState((p) => ({
               ...p,
               cards: p.cards.map((c) =>
-                p.flippedCards.includes(c.id) ? { ...c, isFlipped: false } : c
+                idsToFlipBack.includes(c.id) ? { ...c, isFlipped: false } : c
               ),
               flippedCards: [],
             }));
-          }, 1000);
+            timeoutRef.current = null;
+          }, FLIP_BACK_DELAY);
 
           return {
             ...prev,
@@ -81,6 +95,10 @@ export function useGameLogic(difficulty: Difficulty): UseGameLogicReturn {
   }, []);
 
   const resetGame = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
     setGameState(createInitialState(difficulty));
   }, [difficulty]);
 
@@ -98,10 +116,4 @@ function createInitialState(difficulty: Difficulty): GameState {
     difficulty,
     score: 0,
   };
-}
-
-function calculateScore(attempts: number, matched: number, total: number): number {
-  const baseScore = matched * 100;
-  const attemptPenalty = attempts * 5;
-  return Math.max(0, baseScore - attemptPenalty);
 }

@@ -26,6 +26,9 @@ export function DifficultySelector({ onSelect }: DifficultySelectorProps) {
           style={[styles.button, { backgroundColor: theme.primary }]}
           onPress={() => onSelect(key)}
           activeOpacity={0.7}
+          accessible
+          accessibilityRole="button"
+          accessibilityLabel={`Dificuldade ${label}, ${description}`}
         >
           <Text style={styles.buttonLabel}>{label}</Text>
           <Text style={[styles.buttonDesc, { color: theme.headerTint }]}>{description}</Text>

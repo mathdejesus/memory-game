@@ -13,19 +13,37 @@ function CardComponent({ card, onPress, disabled }: CardProps) {
   const { theme } = useTheme();
   const isRevealed = card.isFlipped || card.isMatched;
 
+  // Estado acessível por leitores de tela.
+  const accessibilityLabel = card.isMatched
+    ? `Carta par encontrado, ${card.value}`
+    : isRevealed
+    ? `Carta revelada, ${card.value}`
+    : 'Carta virada para baixo';
+
   return (
     <TouchableOpacity
       style={styles.container}
       onPress={onPress}
       disabled={disabled || card.isMatched}
       activeOpacity={0.8}
+      accessible
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityState={{ disabled: disabled || card.isMatched, selected: isRevealed }}
     >
       {isRevealed ? (
-        <View style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-          <Text style={styles.emoji}>{card.value}</Text>
+        <View
+          style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.primary }]}
+        >
+          <Text style={[styles.emoji, { color: theme.text }]}>{card.value}</Text>
         </View>
       ) : (
-        <View style={[styles.card, styles.cardFront]}>
+        <View
+          style={[
+            styles.card,
+            { backgroundColor: theme.primary, borderColor: theme.primaryDark },
+          ]}
+        >
           <Text style={styles.questionMark}>?</Text>
         </View>
       )}
@@ -46,10 +64,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-  },
-  cardFront: {
-    backgroundColor: '#4A90D9',
-    borderColor: '#357ABD',
   },
   questionMark: {
     fontSize: 28,

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { GameBoard } from '../components/GameBoard';
 import { ScoreBoard } from '../components/ScoreBoard';
@@ -8,6 +8,7 @@ import { useGameState } from '../hooks/useGameState';
 import { Difficulty } from '../types/game.types';
 import { GameStats } from '../types/game.types';
 import { StorageManager } from '../utils/storageManager';
+import { getElapsedSeconds } from '../utils/gameEngine';
 import { useTheme } from '../contexts/ThemeContext';
 
 interface GameScreenProps {
@@ -22,10 +23,13 @@ export default function GameScreen({ route, navigation }: GameScreenProps) {
   const { saveGame } = useGameState();
 
   const [gameOverVisible, setGameOverVisible] = useState(false);
+  // Tempo congelado no instante do game over (evita漂移 de relógio no render).
+  const [finalElapsed, setFinalElapsed] = useState(0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (gameState.isGameOver) {
-      const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+      const elapsed = getElapsedSeconds(gameState.startTime);
+      setFinalElapsed(elapsed);
       setGameOverVisible(true);
       saveGame(gameState);
 
@@ -45,6 +49,7 @@ export default function GameScreen({ route, navigation }: GameScreenProps) {
 
   const handlePlayAgain = useCallback(() => {
     setGameOverVisible(false);
+    setFinalElapsed(0);
     resetGame();
   }, [resetGame]);
 
@@ -72,7 +77,7 @@ export default function GameScreen({ route, navigation }: GameScreenProps) {
         score={gameState.score}
         attempts={gameState.attempts}
         won={gameState.matchedPairs === gameState.cards.length / 2}
-        elapsedTime={Math.floor((Date.now() - gameState.startTime) / 1000)}
+        elapsedTime={finalElapsed}
         onPlayAgain={handlePlayAgain}
         onMenu={handleMenu}
       />
